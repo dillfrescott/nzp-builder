@@ -2,7 +2,7 @@ FROM debian:bookworm
 
 RUN apt update && apt upgrade -y
 
-RUN apt install -y sudo wget curl nano git zip ffmpeg python3 python3-pip
+RUN apt install -y sudo wget curl git zip ffmpeg python3 python3-pip
 
 RUN dpkg --add-architecture i386 \
  && dpkg --add-architecture armhf \
