@@ -33,7 +33,6 @@ RUN apt install -y \
 RUN curl https://getcroc.schollz.com | bash
 
 
-
 # Prepare
 
 RUN git clone https://github.com/nzp-team/assets /assets
@@ -42,30 +41,7 @@ RUN pip install colorama==0.4.6 fastcrc==0.3.0 pandas==2.1.4 --break-system-pack
 
 RUN git clone https://github.com/nzp-team/quakec /quakec
 
-WORKDIR /quakec
-
-RUN find . -type f -exec sed -i 's/i think he started the femboy transition process/he is here/g' {} +
-
-WORKDIR /
-
-RUN git clone https://github.com/nzp-team/fteqw
-
-WORKDIR /fteqw
-
-RUN find . -type f -exec sed -i 's/\bSatan\b/Paul/g' {} +
-
-RUN find . -type f -exec sed -i "s/\bdevil\b\|devil's/weird/g" {} +
-
-RUN find . -type f -exec sed -i 's/\bHell Magic\b/Weird Magic/g' {} +
-
-RUN find . -type f -exec sed -i 's/Demon/Zombieman/g' {} +
-
-RUN find . -type f -exec sed -i 's/demon/zombieman/g' {} +
-
-RUN find . -type f -name '*Demon*' -exec bash -c 'mv "$0" "${0//Demon/Zombieman}"' {} \;
-
-RUN find . -type f -name '*demon*' -exec bash -c 'mv "$0" "${0//demon/zombieman}"' {} \;
-
+RUN git clone https://github.com/nzp-team/fteqw /fteqw
 
 
 # Start Web Build
@@ -117,54 +93,6 @@ RUN zip -r /play.dill.moe/nzp/game.pk3 *
 RUN mkdir /done
 
 RUN tar -czvf /done/play.dill.moe.tgz /play.dill.moe
-
-
-
-# Start Linux x64 Build
-
-RUN cp -r /fteqw /fteqw-linux64
-
-WORKDIR /fteqw-linux64/engine
-
-RUN CC=x86_64-linux-gnu-gcc STRIP=x86_64-linux-gnu-strip make makelibs FTE_TARGET=SDL2 \
-&& CC=x86_64-linux-gnu-gcc STRIP=x86_64-linux-gnu-strip make m-rel FTE_TARGET=SDL2 FTE_CONFIG=nzportable -j16 \
-&& CC=x86_64-linux-gnu-gcc STRIP=x86_64-linux-gnu-strip mv release/nzportable-sdl2 release/nzportable64-sdl
-
-RUN mkdir /linux-temp
-
-RUN cp release/nzportable64-sdl /linux-temp/
-
-RUN cp /assets/pc/default.fmf /linux-temp/
-
-RUN cp -r /assets/pc/nzp /linux-temp/
-
-WORKDIR /linux-temp
-
-RUN tar -czvf /done/linux64.tgz *
-
-
-
-# Start Windows x64 Build
-
-RUN cp -r /fteqw /fteqw-win64
-
-WORKDIR /fteqw-win64/engine
-
-RUN make makelibs FTE_TARGET=win64_SDL2 \
-&& (make m-rel FTE_TARGET=win64_SDL2 FTE_CONFIG=nzportable -j16 || true) \
-&& make m-rel FTE_TARGET=win64_SDL2 FTE_CONFIG=nzportable -j16
-
-RUN mkdir /win-temp
-
-RUN cp release/nzportable-sdl64.exe /win-temp/
-
-RUN cp /assets/pc/default.fmf /win-temp/
-
-RUN cp -r /assets/pc/nzp /win-temp/
-
-WORKDIR /win-temp
-
-RUN tar -czvf /done/windows64.tgz *
 
 
 # Entrypoint
